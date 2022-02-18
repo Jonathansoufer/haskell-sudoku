@@ -1,5 +1,5 @@
--- This is the first tempt to solve a sudoku problem using haskell.
--- Although this solves theoretically the problem, it is not the best solution.
+-- This is the third attempt to solve a sudoku problem using haskell.
+-- This is the best solution to solve a sudoku problem using haskell in this lecture.
 
 
 import Data.List

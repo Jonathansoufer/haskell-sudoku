@@ -1,4 +1,4 @@
--- This is the first tempt to solve a sudoku problem using haskell.
+-- This is the first attempt to solve a sudoku problem using haskell.
 -- Although this solves theoretically the problem, it is not the best solution.
 
 import Data.List
