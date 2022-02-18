@@ -1,8 +1,9 @@
--- This is the third attempt to solve a sudoku problem using haskell.
--- This is the second best solution to solve a sudoku problem using haskell in this lecture.
+-- This is the fourth attempt to solve a sudoku problem using haskell.
+-- This is the best solution to solve a sudoku problem using haskell in this lecture.
 
 
 import Data.List
+
 -- Type declarations: The types below are used to represent the sudoku problem.
 
 -- A Grid is composed of a list of lists of Matrixes.
@@ -83,9 +84,39 @@ reduce xss =  [xs `minus` singles | xs <- xss]
 minus :: Choices -> Choices -> Choices
 xs `minus` ys = if single xs then xs else xs \\ ys
 
-solve3 :: Grid -> [Grid]
-solve3 = filter valid . collapse . fix prune . choices
+solve4 :: Grid -> [Grid]
+solve4 = search . prune . choices
 
 fix :: Eq a => (a -> a) -> a -> a
 fix f x = if x == x' then x else fix f x'
             where x' = f x
+
+search :: Matrix Choices -> [Grid]
+search cs       | blocked cs = []
+                | all (all single) cs = collapse cs
+                | otherwise = [g | cs' <- expand cs,
+                                  g <- search (prune cs')]
+
+blocked :: Matrix Choices -> Bool
+blocked m =  void m || not (safe m)
+
+expand :: Matrix Choices -> [Matrix Choices]
+expand m =
+    [rows1 ++ [row1 ++ [c] : row2] ++ rows2 | c <- cs]
+    where
+       (rows1,row:rows2) = span (all single) m
+       (row1,cs:row2)    = span single row
+
+complete :: Matrix Choices -> Bool
+complete = all (all single)
+
+void :: Matrix Choices -> Bool
+void = any (any null)
+
+safe :: Matrix Choices -> Bool
+safe cm = all consistent (rows cm) &&
+          all consistent (cols cm) &&
+          all consistent (boxs cm)
+
+consistent :: Row Choices -> Bool
+consistent =  nodups . concat . filter single
